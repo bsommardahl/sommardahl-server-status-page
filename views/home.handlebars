@@ -12,12 +12,18 @@
             <th>Source</th>
             <th>Status</th>
             <th>Last Update</th>
+            <th>Details</th>
         </tr>
     {{#each this}}
         <tr>
             <td>{{source}}</td>
             <td>{{status}}</td>
             <td>{{time}}</td>
+            <td>
+                {{#each targets}}
+                    <div>{{name}} ({{alive}})</div>
+                {{/each}}
+            </td>
         </tr>
     {{/each}}
     </table>
