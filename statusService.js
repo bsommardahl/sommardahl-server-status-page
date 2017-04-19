@@ -66,7 +66,7 @@ module.exports = function(db){
                                         var allTargetsAlive = i.targets.every((t) => { return t.alive; });
                                         i.status = allTargetsAlive ? 'alive' : 'degraded';
                                         i.time = i.time.replace(/ /g,'').replace(/[^\x00-\x7F]/g, "");;
-                                        if(new Date() - new Date(i.time)> 9000){
+                                        if(new Date() - new Date(i.time)> 20000){
                                             i.status = 'disconnected';
                                         }
                                         return i;
