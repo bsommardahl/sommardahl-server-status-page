@@ -25,16 +25,8 @@ module.exports = function(db){
         var getFindOnePromises = (collections) => {
             return new Promise((resolve, reject) => {
                 var promises = collections.map((c) => {
-                    return new Promise((innerResolve, innerReject)=>{
-                        c.findOne({}, (err, response) => {
-                            if(err){
-                                return innerReject(err);
-                            }
-                            else{
-                                return innerResolve(response);
-                            }
-                        });
-                    });
+                    var items = c.find().sort({"time":-1}).limit(1).toArray();
+                    return items;
                 });
                 resolve(promises);
             });
@@ -63,10 +55,14 @@ module.exports = function(db){
                             return Promise.all(promises)
                                 .then((items) => {
                                     return items.map((i) => {
+                                        i = i[0];
+
                                         var allTargetsAlive = i.targets.every((t) => { return t.alive; });
                                         i.status = allTargetsAlive ? 'alive' : 'degraded';
-                                        i.time = i.time.replace(/ /g,'').replace(/[^\x00-\x7F]/g, "");;
-                                        if(new Date() - new Date(i.time)> 20000){
+                                        i.time = i.time.replace(/ /g,'').replace(/[^\x00-\x7F]/g, "");
+                                        var secondsDiff = (new Date() - new Date(i.time)) / 1000;
+                                        console.log(new Date(), new Date(i.time), secondsDiff);
+                                        if(secondsDiff > 20){
                                             i.status = 'disconnected';
                                         }
                                         return i;
