@@ -13,15 +13,7 @@ var url = process.env.MONGODB_URI;
 MongoClient.connect(url, function(err, db) {
     console.log("Mongo database connected.");
 
-    var col = db.collection('history');
-    var aggregate = (query, callback) => {
-        col.aggregate(query, callback);
-    };
-    var insertOne = (payload, callback) => {
-        col.insertOne(payload, callback);
-    }
-
-    var statusService = new StatusService(aggregate, insertOne);
+    var statusService = new StatusService(db);
 
     app.get('/', function (req, res) {
         statusService.getMostRecent()
